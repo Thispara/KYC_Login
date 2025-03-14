@@ -11,6 +11,7 @@ app.use(
       if (filePath.endsWith(".js")) {
         res.setHeader("Content-Type", "application/javascript")
       }
+      console.log("Serving:", filePath);
     },
   })
 )
