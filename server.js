@@ -5,10 +5,17 @@ const PORT = process.env.PORT || 3000
 
 // Serve static files from the React app
 const staticPath = path.join(__dirname, "dist")
-app.use(express.static(staticPath))
+app.use(
+  express.static(staticPath, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith(".js")) {
+        res.setHeader("Content-Type", "application/javascript")
+      }
+    },
+  })
+)
 
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
+// The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
 app.get("*", (req, res) => {
   res.sendFile(path.join(staticPath, "index.html"))
 })
