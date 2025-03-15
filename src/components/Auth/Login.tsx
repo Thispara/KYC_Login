@@ -3,9 +3,9 @@
 import type React from "react"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import api from "../../api/axios"
 import { decodeToken } from "../../utils/token"
 import "./Auth.css"
+import axios from "axios"
 
 interface LoginProps {
   onLogin: (token: string, role: string) => void
@@ -23,6 +23,7 @@ export default function Login({ onLogin }: LoginProps) {
 
   const navigate = useNavigate()
 
+/*************  ✨ Codeium Command 🌟  *************/
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -30,7 +31,7 @@ export default function Login({ onLogin }: LoginProps) {
 
     try {
       // Connect to the backend login endpoint
-      const response = await api.post<LoginResponse>("/login", {
+      const response = await axios.post<LoginResponse>("/login", {
         username,
         password,
       })

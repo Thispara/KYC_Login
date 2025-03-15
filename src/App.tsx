@@ -74,7 +74,7 @@ const App = () => {
         <Route
           path="/user-dashboard"
           element={
-            <ProtectedRoute isAuthenticated={isAuthenticated && userRole === "user"} redirectPath="/login">
+            <ProtectedRoute isAuthenticated={isAuthenticated && userRole === "user"} redirectPath="/login" >
               <UserDashboard onLogout={handleLogout} />
             </ProtectedRoute>
           }
@@ -83,7 +83,7 @@ const App = () => {
         <Route
           path="/admin-dashboard"
           element={
-            <ProtectedRoute isAuthenticated={isAuthenticated && userRole === "admin"} redirectPath="/login">
+            <ProtectedRoute isAuthenticated={isAuthenticated && userRole === "admin"} redirectPath="/login" >
               <AdminDashboard onLogout={handleLogout} />
             </ProtectedRoute>
           }

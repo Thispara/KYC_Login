@@ -7,12 +7,13 @@ interface ProtectedRouteProps {
   children?: React.ReactNode
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isAuthenticated, redirectPath = "/login", children }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isAuthenticated, redirectPath = "/user-dashboard", children,}) => {
+  
   if (!isAuthenticated) {
     return <Navigate to={redirectPath} replace />
   }
 
-  return children 
+  return children;
 }
 
 export default ProtectedRoute

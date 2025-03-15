@@ -2,7 +2,7 @@ import axios from "axios"
 
 // Create an axios instance with base configuration
 const api = axios.create({
-  baseURL: "/", // Using root path as requested
+  baseURL: "/", // Using root path since your backend is using paths like "/login", "/register"
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -20,7 +20,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error)
-  }
+  },
 )
 
 // Add a response interceptor to handle common errors
@@ -37,7 +37,8 @@ api.interceptors.response.use(
       window.location.href = "/login"
     }
     return Promise.reject(error)
-  }
+  },
 )
 
 export default api
+

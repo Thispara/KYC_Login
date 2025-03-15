@@ -3,9 +3,9 @@
 import type React from "react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import api from "../../api/axios"
 import "./Register.css"
 import "./Auth.css"
+import axios from "axios"
 
 export default function Register() {
   const [step, setStep] = useState(1)
@@ -49,6 +49,7 @@ export default function Register() {
 
   const navigate = useNavigate()
 
+  // Update the handleSubmit function to better handle errors and add debugging
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -64,7 +65,7 @@ export default function Register() {
       formDataToSend.append("password", formData.password)
       formDataToSend.append("firstName", formData.firstName)
       formDataToSend.append("lastName", formData.lastName)
-      formDataToSend.append("id_number", formData.idNumber)
+      formDataToSend.append("idNumber", formData.idNumber)
       formDataToSend.append("address", formData.address)
 
       // Add the file with the correct field name
@@ -72,21 +73,49 @@ export default function Register() {
         formDataToSend.append("idfile", formData.idFile)
       }
 
-      // Send registration data to API
-      await api.post("/register", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      // Log the form data being sent (for debugging)
+      console.log("Sending registration data:", {
+        email: formData.email,
+        username: formData.username,
+        // Don't log password
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        idNumber: formData.idNumber,
+        address: formData.address,
+        idFile: formData.idFile ? formData.idFile.name : null,
       })
 
+      // Use axios directly instead of the api instance for more control
+      const response = await axios.post("/register", formDataToSend)
+
+      console.log("Registration successful:", response.data)
       navigate("/register/success")
     } catch (err: any) {
-      if (err.response && err.response.data && err.response.data.error) {
-        setError(err.response.data.error)
+      console.error("Registration error:", err)
+
+      // More detailed error handling
+      if (err.response) {
+        // The server responded with a status code outside the 2xx range
+        console.error("Response data:", err.response.data)
+        console.error("Response status:", err.response.status)
+        console.error("Response headers:", err.response.headers)
+
+        if (typeof err.response.data === "string" && err.response.data.includes("<!doctype html>")) {
+          setError("Server error: The server returned an HTML error page instead of JSON. Please contact support.")
+        } else if (err.response.data && err.response.data.error) {
+          setError(err.response.data.error)
+        } else {
+          setError(`Server error (${err.response.status}): Please try again later`)
+        }
+      } else if (err.request) {
+        // The request was made but no response was received
+        console.error("No response received:", err.request)
+        setError("No response from server. Please check your internet connection.")
       } else {
-        setError("An error occurred during registration")
+        // Something happened in setting up the request
+        console.error("Error message:", err.message)
+        setError("An error occurred during registration: " + err.message)
       }
-      console.error(err)
     } finally {
       setIsLoading(false)
     }
